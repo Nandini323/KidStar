@@ -17,6 +17,6 @@ class MainViewModel:ViewModel() {
     }
 
     fun FavourateClicked(itemId: Int){
-
+        _navigateTo.value = itemId
     }
 }

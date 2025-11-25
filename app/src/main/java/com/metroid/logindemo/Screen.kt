@@ -109,7 +109,8 @@ fun SplashScreen(){
             Box(modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()) {
-                Image(painter = painterResource(id = R.drawable.panda_bg), contentDescription = "Splash Screen Image", modifier = Modifier.align(Alignment.Center))
+                Image(painter = painterResource(id = R.drawable.panda_bg), contentDescription = "Splash Screen Image", modifier = Modifier.align(Alignment.Center).clip(
+                    CircleShape), contentScale = ContentScale.Crop)
             }
         }
     )
@@ -213,7 +214,7 @@ fun HomeContent(pagerState: PagerState, item: List<Frontlistmodel>, viewModel: M
         ) { page ->
             Card(
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
+                modifier = Modifier.fillMaxSize()
                     .graphicsLayer {
                         val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
 
@@ -236,12 +237,18 @@ fun HomeContent(pagerState: PagerState, item: List<Frontlistmodel>, viewModel: M
 
                     }
             ) {
-                Image(
-                    painter = imageSlider[page],
-                    contentDescription = stringResource(R.string.app_name),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize().clip(CircleShape)
-                )
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center // centers image
+                ) {
+                    Image(
+                        painter = imageSlider[page],
+                        contentDescription = stringResource(R.string.app_name),
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(200.dp) // control size
+                    )
+                }
             }
         }
 
@@ -390,6 +397,7 @@ fun SearchContent(pagerState: PagerState, item: List<Frontlistmodel>, viewModel:
                                 contentDescription = "Favorite",
                                 tint = Color.Red,
                                 modifier = Modifier.size(20.dp).clickable {
+                                    viewModel.FavourateClicked(index.id)
                                     Toast.makeText(context,"Favourite added",Toast.LENGTH_LONG).show()
                                 }
 
@@ -500,7 +508,6 @@ fun ProfileScreen(PaddingValues:PaddingValues) {
     Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         val context = LocalContext.current
         val uri = RawResourceDataSource.buildRawResourceUri(videoResId)
-
         val exoPlayer = remember {
             ExoPlayer.Builder(context).build().apply {
                 val mediaItem = MediaItem.fromUri(uri)
